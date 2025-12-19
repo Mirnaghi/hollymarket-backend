@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authRoutes from './auth.routes';
 import marketsRoutes from './markets.routes';
 import tradingRoutes from './trading.routes';
+import commentsRoutes from './comments.routes';
 import { config } from '../config/env';
 
 const router = Router();
@@ -9,6 +10,7 @@ const router = Router();
 router.use('/auth', authRoutes);
 router.use('/markets', marketsRoutes);
 router.use('/trading', tradingRoutes);
+router.use('/comments', commentsRoutes);
 
 router.get('/health', (_req, res) => {
   res.json({

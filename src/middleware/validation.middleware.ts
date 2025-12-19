@@ -85,4 +85,32 @@ export const schemas = {
       q: z.string().min(1, 'Search query is required'),
     }),
   }),
+
+  getComments: z.object({
+    query: z.object({
+      limit: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : undefined))
+        .refine((val) => val === undefined || val >= 0, {
+          message: 'Limit must be >= 0',
+        }),
+      offset: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : undefined))
+        .refine((val) => val === undefined || val >= 0, {
+          message: 'Offset must be >= 0',
+        }),
+      order: z.string().optional(),
+      ascending: z.enum(['true', 'false']).optional(),
+      parent_entity_type: z.enum(['Event', 'Series', 'market']).optional(),
+      parent_entity_id: z
+        .string()
+        .optional()
+        .transform((val) => (val ? parseInt(val, 10) : undefined)),
+      get_positions: z.enum(['true', 'false']).optional(),
+      holders_only: z.enum(['true', 'false']).optional(),
+    }),
+  }),
 };

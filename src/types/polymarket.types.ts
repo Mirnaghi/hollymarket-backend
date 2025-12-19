@@ -133,6 +133,15 @@ export interface PolymarketApiResponse<T> {
   next_cursor?: string;
 }
 
+export interface PolymarketTag {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  eventCount?: number;
+  marketCount?: number;
+}
+
 export enum MarketStatus {
   ACTIVE = 'ACTIVE',
   CLOSED = 'CLOSED',
@@ -152,6 +161,15 @@ export enum OrderStatus {
 }
 
 export interface GetMarketsParams {
+  limit?: number;
+  offset?: number;
+  active?: boolean;
+  closed?: boolean;
+  archived?: boolean;
+  tag?: string;
+}
+
+export interface GetEventsParams {
   limit?: number;
   offset?: number;
   active?: boolean;

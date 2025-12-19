@@ -4,12 +4,16 @@ import { ResponseBuilder } from '../utils/response';
 
 export class MarketsController {
   async getEvents(req: Request, res: Response): Promise<Response> {
-    const { limit, offset, active } = req.query;
+    const { limit, offset, active, closed, archived, tag_id, ascending } = req.query;
 
     const params = {
       limit: limit ? parseInt(limit as string, 10) : 50,
       offset: offset ? parseInt(offset as string, 10) : 0,
       active: active === 'true' ? true : active === 'false' ? false : undefined,
+      closed: closed === 'true' ? true : closed === 'false' ? false : undefined,
+      archived: archived === 'true' ? true : archived === 'false' ? false : undefined,
+      ascending: ascending === 'true' ? true : ascending === 'false' ? false : undefined,
+      tag: tag_id as string | undefined,
     };
 
     const events = await polymarketApiService.getEvents(params);
@@ -95,6 +99,36 @@ export class MarketsController {
     return ResponseBuilder.success(res, {
       count: markets.length,
       markets,
+    });
+  }
+
+  async getTags(_req: Request, res: Response): Promise<Response> {
+    const tags = await polymarketApiService.getTags();
+
+    return ResponseBuilder.success(res, {
+      count: tags.length,
+      tags,
+    });
+  }
+
+  async getEventsByTag(req: Request, res: Response): Promise<Response> {
+    const { tagId } = req.params;
+    const { limit, offset, active, closed, archived } = req.query;
+
+    const params = {
+      limit: limit ? parseInt(limit as string, 10) : 200,
+      offset: offset ? parseInt(offset as string, 10) : 0,
+      active: active === 'true' ? true : active === 'false' ? false : undefined,
+      closed: closed === 'true' ? true : closed === 'false' ? false : undefined,
+      archived: archived === 'true' ? true : archived === 'false' ? false : undefined,
+    };
+
+    const events = await polymarketApiService.getEventsByTag(tagId, params);
+
+    return ResponseBuilder.success(res, {
+      count: events.length,
+      tagId,
+      events,
     });
   }
 }

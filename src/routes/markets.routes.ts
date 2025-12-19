@@ -5,7 +5,13 @@ import 'express-async-errors';
 
 const router = Router();
 
+router.get('/tags', optionalAuth, (req, res) => marketsController.getTags(req, res));
+
 router.get('/events', optionalAuth, (req, res) => marketsController.getEvents(req, res));
+
+router.get('/events/tag/:tagId', optionalAuth, (req, res) =>
+  marketsController.getEventsByTag(req, res)
+);
 
 router.get('/events/:slug', optionalAuth, (req, res) =>
   marketsController.getEventBySlug(req, res)

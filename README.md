@@ -200,11 +200,29 @@ Authorization: Bearer <token>
 
 ### Markets Endpoints
 
+#### Get Tags
+
+```http
+GET /api/v1/markets/tags
+```
+
+Returns all available tags/categories from Polymarket.
+
 #### Get Events
 
 ```http
-GET /api/v1/markets/events?limit=50&offset=0&active=true
+GET /api/v1/markets/events?limit=50&offset=0&active=true&tag_id=politics
 ```
+
+Supports filtering by tag_id, active status, closed, and archived.
+
+#### Get Events by Tag
+
+```http
+GET /api/v1/markets/events/tag/:tagId?limit=50&active=true
+```
+
+Fetch events filtered by a specific tag ID.
 
 #### Get Event by Slug
 

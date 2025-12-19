@@ -5,7 +5,9 @@ import { ApiError } from '../types';
 import {
   PolymarketEvent,
   PolymarketMarket,
+  PolymarketTag,
   GetMarketsParams,
+  GetEventsParams,
 } from '../types/polymarket.types';
 
 export class PolymarketApiService {
@@ -75,12 +77,15 @@ export class PolymarketApiService {
     return new ApiError(503, 'Polymarket API service unavailable', 'SERVICE_UNAVAILABLE');
   }
 
-  async getEvents(params?: { limit?: number; offset?: number; active?: boolean }): Promise<PolymarketEvent[]> {
+  async getEvents(params?: GetEventsParams): Promise<PolymarketEvent[]> {
     try {
       const queryParams: any = {};
       if (params?.limit) queryParams.limit = params.limit;
       if (params?.offset) queryParams.offset = params.offset;
       if (params?.active !== undefined) queryParams.active = params.active;
+      if (params?.closed !== undefined) queryParams.closed = params.closed;
+      if (params?.archived !== undefined) queryParams.archived = params.archived;
+      if (params?.tag) queryParams.tag_id = params.tag;
 
       const response = await this.client.get<PolymarketEvent[]>('/events', {
         params: queryParams,
@@ -181,6 +186,38 @@ export class PolymarketApiService {
       return response.data;
     } catch (error) {
       logger.error(`Failed to fetch trending markets: ${error}`);
+      throw error;
+    }
+  }
+
+  async getTags(): Promise<PolymarketTag[]> {
+    try {
+      const response = await this.client.get<PolymarketTag[]>('/tags');
+      logger.info(`Fetched ${response.data.length} tags from Polymarket`);
+      return response.data;
+    } catch (error) {
+      logger.error(`Failed to fetch tags: ${error}`);
+      throw error;
+    }
+  }
+
+  async getEventsByTag(tagId: string, params?: GetEventsParams): Promise<PolymarketEvent[]> {
+    try {
+      const queryParams: any = { tag_id: tagId };
+      if (params?.limit) queryParams.limit = params.limit;
+      if (params?.offset) queryParams.offset = params.offset;
+      if (params?.active !== undefined) queryParams.active = params.active;
+      if (params?.closed !== undefined) queryParams.closed = params.closed;
+      if (params?.archived !== undefined) queryParams.archived = params.archived;
+
+      const response = await this.client.get<PolymarketEvent[]>('/events', {
+        params: queryParams,
+      });
+
+      logger.info(`Fetched ${response.data.length} events for tag: ${tagId}`);
+      return response.data;
+    } catch (error) {
+      logger.error(`Failed to fetch events by tag ${tagId}: ${error}`);
       throw error;
     }
   }
