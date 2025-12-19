@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: hollymarket-api
+    runtime: node
+    buildCommand: yarn install --frozen-lockfile
+    startCommand: yarn start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: POLYMARKET_API_URL
+        value: https://gamma-api.polymarket.com
+      - key: POLYMARKET_CLOB_API_URL
+        value: https://clob.polymarket.com
+      - key: POLYMARKET_CHAIN_ID
+        value: "137"
