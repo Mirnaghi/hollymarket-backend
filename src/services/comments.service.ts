@@ -21,8 +21,8 @@ export class CommentsService {
       (error) => {
         logger.error(`Polymarket comments API error: ${error.message}`);
         throw new ApiError(
-          error.response?.data?.message || 'Failed to fetch comments from Polymarket',
-          error.response?.status || 500
+          error.response?.status || 500,
+          error.response?.data?.message || 'Failed to fetch comments from Polymarket'
         );
       }
     );
@@ -56,7 +56,7 @@ export class CommentsService {
         throw error;
       }
       logger.error(`Unexpected error fetching comments: ${error}`);
-      throw new ApiError('Failed to fetch comments', 500);
+      throw new ApiError(500, 'Failed to fetch comments');
     }
   }
 }
