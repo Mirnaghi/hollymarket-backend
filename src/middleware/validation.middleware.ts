@@ -113,4 +113,17 @@ export const schemas = {
       holders_only: z.enum(['true', 'false']).optional(),
     }),
   }),
+
+  signRequest: z.object({
+    body: z.object({
+      method: z.enum(['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], {
+        errorMap: () => ({ message: 'Method must be GET, POST, DELETE, PUT, or PATCH' }),
+      }),
+      path: z
+        .string()
+        .min(1, 'Path is required')
+        .regex(/^\//, 'Path must start with /'),
+      body: z.string().optional(),
+    }),
+  }),
 };

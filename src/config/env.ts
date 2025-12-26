@@ -19,6 +19,11 @@ const envSchema = z.object({
   POLYMARKET_CHAIN_ID: z.string().default('137'),
   POLYMARKET_FUNDER_PRIVATE_KEY: z.string().optional(),
 
+  // Polymarket Builder Credentials
+  POLYMARKET_BUILDER_API_KEY: z.string().min(1),
+  POLYMARKET_BUILDER_SECRET: z.string().min(1),
+  POLYMARKET_BUILDER_PASSPHRASE: z.string().min(1),
+
   // CORS
   ALLOWED_ORIGINS: z.string().default('http://localhost:3000'),
 
@@ -59,6 +64,11 @@ export const config = {
     clobApiUrl: env.POLYMARKET_CLOB_API_URL,
     chainId: parseInt(env.POLYMARKET_CHAIN_ID, 10),
     funderPrivateKey: env.POLYMARKET_FUNDER_PRIVATE_KEY,
+    builder: {
+      apiKey: env.POLYMARKET_BUILDER_API_KEY,
+      secret: env.POLYMARKET_BUILDER_SECRET,
+      passphrase: env.POLYMARKET_BUILDER_PASSPHRASE,
+    },
   },
   cors: {
     allowedOrigins: env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim()),

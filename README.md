@@ -7,6 +7,8 @@ A production-grade TypeScript API backend for a prediction market application, i
 - 🔐 **Supabase Authentication** - Magic link/OTP email authentication
 - 📊 **Polymarket Integration** - Full access to events, markets, and orderbook
 - 📈 **Trading Support** - Create, cancel, and manage orders on Polymarket CLOB
+- 🏆 **Builder Attribution** - Remote signing endpoint for Polymarket builder credit
+- 💬 **Comments Service** - Fetch and display Polymarket community comments
 - 🏗️ **Clean Architecture** - Modular, maintainable, and testable code structure
 - 🔒 **Type Safety** - Full TypeScript support with strict type checking
 - 📝 **Comprehensive Logging** - Winston logger with file and console outputs
@@ -115,6 +117,11 @@ POLYMARKET_API_URL=https://gamma-api.polymarket.com
 POLYMARKET_CLOB_API_URL=https://clob.polymarket.com
 POLYMARKET_CHAIN_ID=137
 POLYMARKET_FUNDER_PRIVATE_KEY=optional_for_signing
+
+# Polymarket Builder Credentials (for builder attribution)
+POLYMARKET_BUILDER_API_KEY=your_builder_api_key
+POLYMARKET_BUILDER_SECRET=your_builder_secret
+POLYMARKET_BUILDER_PASSPHRASE=your_builder_passphrase
 
 # CORS
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
@@ -373,6 +380,60 @@ GET /api/v1/trading/tick-size/:tokenId
 GET /api/v1/trading/min-order-size/:tokenId
 ```
 
+### Comments Endpoints
+
+#### Get Comments
+
+```http
+GET /api/v1/comments?limit=50&offset=0&parent_entity_type=Event&parent_entity_id=123
+```
+
+Query parameters:
+- `limit` - Number of comments to return (>= 0)
+- `offset` - Number of comments to skip (>= 0)
+- `order` - Comma-separated fields to order by
+- `ascending` - Sort order (true/false)
+- `parent_entity_type` - Filter by entity type (Event, Series, market)
+- `parent_entity_id` - Filter by parent entity ID
+- `get_positions` - Include position data (true/false)
+- `holders_only` - Only show comments from token holders (true/false)
+
+### Polymarket CLOB Builder Endpoints
+
+#### Remote Signing Endpoint
+
+```http
+POST /api/v1/polymarket/sign
+Content-Type: application/json
+
+{
+  "method": "POST",
+  "path": "/order",
+  "body": "{\"market\":\"0x123...\",\"side\":\"BUY\",...}"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "POLY_BUILDER_API_KEY": "your_api_key",
+    "POLY_BUILDER_SIGNATURE": "signature_hash",
+    "POLY_BUILDER_TIMESTAMP": 1703001234567,
+    "POLY_BUILDER_PASSPHRASE": "your_passphrase"
+  }
+}
+```
+
+This endpoint is automatically called by the Polymarket CLOB client on the frontend for builder attribution.
+
+#### Builder Configuration Status
+
+```http
+GET /api/v1/polymarket/builder-info
+```
+
 ### Health Check
 
 ```http
@@ -444,6 +505,17 @@ Logs are written to:
 - ✅ Rate limiting ready
 - ✅ SQL injection prevention (via Supabase)
 - ✅ XSS protection
+
+## Documentation
+
+### Complete Guides
+
+- **[POLYMARKET_CLOB_INTEGRATION.md](POLYMARKET_CLOB_INTEGRATION.md)** - Complete guide for implementing Polymarket CLOB trading with remote builder signing
+- **[FRONTEND_REQUIREMENTS.md](FRONTEND_REQUIREMENTS.md)** - Frontend developer checklist and quick reference for CLOB integration
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide for getting started
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Detailed system architecture documentation
+- **[FRONTEND_INTEGRATION.md](FRONTEND_INTEGRATION.md)** - Frontend integration examples and best practices
+- **[TAGS_API_GUIDE.md](TAGS_API_GUIDE.md)** - Guide for using tags to filter events and markets
 
 ## Deployment
 
